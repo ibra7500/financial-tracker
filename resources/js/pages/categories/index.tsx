@@ -51,7 +51,7 @@ export default function Categories({ categories }: CategoriesProps) {
                             <TableRow>
                                 <TableHead className="text-center">Name</TableHead>
                                 <TableHead className="text-center">Type</TableHead>
-                                <TableHead clgiassName="text-center">Action</TableHead>
+                                <TableHead className="text-center">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
