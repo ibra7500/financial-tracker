@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AccountController extends Controller
 {
@@ -12,6 +14,10 @@ class AccountController extends Controller
     public function index()
     {
         //
+        $accounts = Account::get();
+        return Inertia::render('accounts/index', [
+            'accounts' => $accounts,
+        ]);
     }
 
     /**
@@ -20,6 +26,9 @@ class AccountController extends Controller
     public function create()
     {
         //
+        return Inertia::render('accounts/form', [
+            'mode' => 'create',
+        ]);
     }
 
     /**
@@ -28,6 +37,19 @@ class AccountController extends Controller
     public function store(Request $request)
     {
         //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'balance' => 'required',
+        ]);
+
+        $account = new Account();
+        $account->name = $validated['name'];
+        // process balance to decimal
+        $balance = str_replace(',', '', $validated['balance']);
+        $account->balance = $balance;
+        $account->save();
+
+        return redirect()->route('accounts.index')->with('success', 'Account created successfully.');
     }
 
     /**
@@ -44,6 +66,11 @@ class AccountController extends Controller
     public function edit(string $id)
     {
         //
+        $account = Account::findOrFail($id);
+        return Inertia::render('accounts/form', [
+            'mode' => 'edit',
+            'account' => $account,
+        ]);
     }
 
     /**
@@ -52,6 +79,19 @@ class AccountController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'balance' => 'required',
+        ]);
+
+        $account = Account::findOrFail($id);
+        $account->name = $validated['name'];
+        // process balance to decimal
+        $balance = str_replace(',', '', $validated['balance']);
+        $account->balance = $balance;
+        $account->save();
+
+        return redirect()->route('accounts.index')->with('success', 'Account updated successfully.');
     }
 
     /**

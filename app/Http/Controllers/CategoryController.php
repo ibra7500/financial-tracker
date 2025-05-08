@@ -46,7 +46,7 @@ class CategoryController extends Controller
         $category->name = $validated['name'];
         $category->type = $validated['type'];
         $category->save();
-        
+
         return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
 
@@ -64,6 +64,11 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         //
+        $category = Category::findOrFail($id);
+        return Inertia::render('categories/form', [
+            'mode' => 'edit',
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -72,6 +77,17 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string',
+        ]);
+
+        $category = Category::findOrFail($id);
+        $category->name = $validated['name'];
+        $category->type = $validated['type'];
+        $category->save();
+
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
     /**
